@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binghan's Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Critical Inline Script: Prevents a white flash on page load if dark mode is active -->
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Centered Theme Toggle Control Panel -->
+    <div class="toggle-container">
+        <button id="theme-toggle" aria-label="Toggle dark mode">
+            🌙 Dark Mode
+        </button>
+    </div>
+
+    <main>
+        <section id="hero" class="hero-section">
+            <div class="hero-content">
+                <h1>Hi, I'm Binghan</h1>
+                <p>I'm just a student exploring his hobbies and trying to do better</p>
+            </div>
+        </section>
+
+        <section id="about" class="container">
+            <h2>About Me</h2>
+            <div class="about-grid">
+                <p>
+		<b>Name:</b> Hou Binghan (He/Him)
+		<br>
+		<br>
+		<b>Age:</b> 15
+		<br>
+		<br>
+		<b>Nationality:</b> Singaporean
+		<br>
+		<br>
+		<b>Race:</b> Chinese
+		<br>
+		<br>
+		Currently a student
+		<br>
+		<br>
+		<b>Hobbies:</b> CTF, Web dev, Mathematics, Football, Tennis
+		<br>
+		<br>
+		Massive foodie
+		<br>
+		<br>
+		I love memes
+		<br>
+		<br>
+		Arsenal fan
+		<br>
+		<br>
+		Real Madrid fan, likes Valverde
+		</p>
+            </div>
+        </section>
+	
+        <section id="projects" class="container">
+            <h2>My Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3>1. My website</h3>
+		    <p>Yep, this is my website that you can see here. Mainly for me to practically apply my html, css and js, also for my online portfolio and records.</p>
+                </div>
+                <div class="project-card">
+                    <h3>2. Autopwner for CTFs</h3>
+		    <p>Quite in the developmental phase, but contact me if interested.</p>
+                </div>
+                <div class="project-card">
+                    <h3>3. CTF writeups collection</h3>
+		    <p>Currently massive, with a lot of writeups from PicoCTF, Sieberrsec CTF, BlahajCTF, etc. However, it is quite messy so I'm working on organising them neatly and making a public repo on github soon.</p>
+                </div>
+            </div>
+            <p class="projects-footer">Looks like it's just this for now!</p>
+        </section>
+	
+	<section id="achievements" class="container">
+		<h2>Achievements (primarily in CTF and math olympiads)</h2>
+		<div class="projects-card">
+			<h3>2026</h3>
+			<p>1. Sieberrsec CTF 4th (secondary school)</p>
+			<p>2. I.YCEP training camp CTF 2nd overall</p>
+			<p>3. PicoCTF global 628th</p>
+			<p>4. NCO(national cybersecurity olympiad) finalist</p>
+			<p>5. SMO(Singapore Mathematical Olympiad) gold medalist</p>
+		</div>
+		<div class="projects-card">
+			<h3>2025</h3>
+			<p>1. BlahajCTF participation</p>
+			<p>2. SMO(Singapore Mathematical Olympiad) gold medalist</p>
+		</div>
+	</section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="container contact-section">
+            <h2>Contact</h2>
+            <p>My contacts if anyone is interested to work with me on almost anything.</p>
+            <div class="btn-group">
+                <a href="https://linkedin.com" class="btn">Linkedin</a>
+                <a href="https://discord.com" class="btn">Discord</a>
+                <a href="mailto:iamprofootballer@gmail.com" class="btn">Email</a>
+            </div>
+        </section>
+
+	<hr>
+	<section id="quiz"><a href="/quiz.html" class=btn>Fun little quiz about me</a></section>
+    </main>
+
+
+    <aside class="image-stack-sidebar left-sidebar">
+        <!-- Swap out placeholders with your specific images/memes for the left side -->
+        <img src="/deadpool2.png" alt="Left side graphic 1">
+        <img src="/venom.png" alt="Left side graphic 2">
+    </aside>
+    <!-- Independent Side Image Stack -->
+    <aside class="image-stack-sidebar right-sidebar">
+        <!-- Swap out placeholders with your specific images/memes -->
+        <img src="/loki.png" alt="Right Side graphic 1">
+        <img src="/deadpool.png" alt="Right Side graphic 2">
+        <img src="/avengers.png" alt="Right Side graphic 3">
+    </aside>
+
+    <!-- Interactive JavaScript Logic -->
+    <script>
+        const toggleBtn = document.querySelector('#theme-toggle');
+
+        function updateButtonLabel() {
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            toggleBtn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }
+
+        updateButtonLabel();
+
+        toggleBtn.addEventListener('click', () => {
+            const isDarkMode = document.documentElement.classList.toggle('dark-mode');
+            
+            if (isDarkMode) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+            
+            updateButtonLabel();
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic JavaScript Quiz</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 550px;
+            padding: 30px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .options-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .option-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 14px 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            color: #495057;
+        }
+
+        .option-item:hover {
+            background: #e8f0fe;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+        }
+
+        .option-item.correct {
+            background: #d1e7dd;
+            border-color: #0f5132;
+            color: #0f5132;
+        }
+
+        .option-item.incorrect {
+            background: #f8d7da;
+            border-color: #842029;
+            color: #842029;
+        }
+
+        .disabled {
+            pointer-events: none;
+        }
+
+        .btn-next {
+            display: block;
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-next:hover {
+            background: #2563eb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .results-screen {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .score-text {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <!-- Quiz Interface Screen -->
+        <div id="quiz-screen">
+            <h2 id="question-text">Loading Question...</h2>
+            <ul id="options-container" class="options-list"></ul>
+            <button id="next-btn" class="btn-next hidden">Next Question</button>
+        </div>
+
+        <!-- Final Results Screen -->
+        <div id="results-screen" class="results-screen hidden">
+            <h2>Quiz Completed!</h2>
+            <p class="score-text">You scored <span id="final-score">0</span> out of <span id="total-questions">0</span></p>
+            <button id="restart-btn" class="btn-next">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Define your quiz data structure here
+        const quizData = [
+            {
+                question: "What is my favourite book series?",
+                options: ["Hunger Games", "The Lord of the Rings", "Harry Potter", "Percy Jackson & the Olympians"],
+                correct: 2 // Index of the correct option
+            },
+            {
+                question: "What is my favorite sport?",
+                options: [
+                    "Football",
+                    "Badminton",
+                    "Rugby",
+                    "Tennis"
+                ],
+                correct: 0
+            },
+            {
+                question: "Guess my favorite colour!",
+                options: ["White", "Black", "Pink", "Blue"],
+                correct: 1
+            },
+	    {
+		question: "When did I start my CTF journey?",
+		options: ["2026","2025","2024","2023"],
+		correct: 1
+	    },
+	    {
+		question: "What country do I live in?",
+		options: ["China","Switzerland","Germany","Poland"],
+		correct: 0
+	    },
+	    {
+		question: "How many members are in my CTF team?",
+		options: ["1","2","3","5"],
+		correct: 2
+	    },
+	    {
+		question: "How much prize money have I won from CTF?",
+		options: ["$0","$100","$300","$1000"],
+		correct: 2
+	    },
+	    {
+		question: "Which distro of Linux do I use?",
+		options: ["Fedora","Kali","Ubuntu","Mint"],
+		correct: 2
+	    },
+	    {
+		question: "Number of times I was shat on by a bird?",
+		options: ["0","1","3","11"],
+		correct: 1
+	    }
+
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Dom Elements
+        const quizScreen = document.getElementById("quiz-screen");
+        const resultsScreen = document.getElementById("results-screen");
+        const questionText = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const nextBtn = document.getElementById("next-btn");
+        const finalScoreElem = document.getElementById("final-score");
+        const totalQuestionsElem = document.getElementById("total-questions");
+        const restartBtn = document.getElementById("restart-btn");
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            resultsScreen.classList.add("hidden");
+            quizScreen.classList.remove("hidden");
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            resetState();
+            const currentQuestion = quizData[currentQuestionIndex];
+            questionText.innerText = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
+
+            currentQuestion.options.forEach((option, index) => {
+                const li = document.createElement("li");
+                li.innerText = option;
+                li.classList.add("option-item");
+                li.addEventListener("click", () => selectOption(li, index));
+                optionsContainer.appendChild(li);
+            });
+        }
+
+        function resetState() {
+            nextBtn.classList.add("hidden");
+            optionsContainer.innerHTML = "";
+        }
+
+        function selectOption(selectedLi, selectedIndex) {
+            const correctAnswerIndex = quizData[currentQuestionIndex].correct;
+            const allOptions = optionsContainer.children;
+
+            // Highlight chosen answer and correct answer
+            if (selectedIndex === correctAnswerIndex) {
+                selectedLi.classList.add("correct");
+                score++;
+            } else {
+                selectedLi.classList.add("incorrect");
+                allOptions[correctAnswerIndex].classList.add("correct"); // Show correct answer
+            }
+
+            // Lock further clicks on options
+            for (let option of allOptions) {
+                option.classList.add("disabled");
+            }
+
+            nextBtn.classList.remove("hidden");
+        }
+
+        function handleNextButton() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizScreen.classList.add("hidden");
+            resultsScreen.classList.remove("hidden");
+            finalScoreElem.innerText = score;
+            totalQuestionsElem.innerText = quizData.length;
+        }
+
+        // Event Listeners
+        nextBtn.addEventListener("click", handleNextButton);
+        restartBtn.addEventListener("click", startQuiz);
+
+        // Run the quiz on load
+        startQuiz();
+    </script>
+</body>
+</html>
+
